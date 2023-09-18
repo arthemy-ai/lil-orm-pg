@@ -1,5 +1,5 @@
 {
-  "name": "@lil-orm/pg",
+  "name": "@arthemy-ai/lil-orm-pg",
   "version": "1.1.0",
   "description": "Lil ORM is a super lightweight PostgreSQL ORM for Node.js. With its clear API, you can easily interact with PostgreSQL databases.",
   "main": "dist/src/index.js",
