@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Pool } from "pg";
 
 export type DatabaseDriver = "postgresql";
 
@@ -10,7 +10,7 @@ export class DatabaseConnection {
     private readonly driver: DatabaseDriver
   ) {
     this.connection = new Pool({
-      connectionString: connectionString
+      connectionString,
     });
   }
 

@@ -1,8 +1,13 @@
 import { COLUMN_METADATA_KEY } from "./metadata/constants";
 import { MetadataExtractor } from "./metadata/metadata-extractor";
-import { ColumnMetadata, LilORMType, OrmTypesToPostgreSQLMap, PostgreSQLType } from "./types";
+import {
+  ColumnMetadata,
+  LilORMType,
+  OrmTypesToPostgreSQLMap,
+  PostgreSQLType,
+} from "./types";
 import { TypesHelper } from "./types-helper";
-import { formatISO, parseISO } from 'date-fns';
+import { formatISO, parseISO } from "date-fns";
 
 export class EntityTransformer {
   static sqlEntityToObj<TEntity>(entityInstance: any, values: any): TEntity {
@@ -43,10 +48,10 @@ export class EntityTransformer {
       INTEGER: (value: any) => parseInt(value, 10).toString(),
       REAL: (value: any) => parseFloat(value).toString(),
       JSON: (value: any) => `'${JSON.stringify(value)}'`,
-      BOOLEAN: (value: any) => value ? "true" : "false",
+      BOOLEAN: (value: any) => (value ? "true" : "false"),
       DATE: (value: any) => `'${formatISO(new Date(value))}'`,
       UUID: (value: any) => `'${value}'`,
-      BLOB: (value: any) => `'\\x${value.toString('hex')}'`,
+      BLOB: (value: any) => `'\\x${value.toString("hex")}'`,
     };
   }
 
@@ -57,9 +62,9 @@ export class EntityTransformer {
       REAL: (value: any) => parseFloat(value),
       JSON: (value: any) => value,
       BOOLEAN: (value: any) => Boolean(value === true),
-      DATE: (value: any) =>  new Date(value),
+      DATE: (value: any) => new Date(value),
       UUID: (value: any) => value,
-      BLOB: (value: any) => Buffer.from(value.slice(2), 'hex'),
+      BLOB: (value: any) => Buffer.from(value.slice(2), "hex"),
     };
   }
 

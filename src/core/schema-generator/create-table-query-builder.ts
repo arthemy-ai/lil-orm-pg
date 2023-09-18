@@ -33,12 +33,17 @@ export class CreateTableQueryBuilder {
 
     properties.forEach((propertyKey) => {
       const propertyMetadata = getColumnMetadata(entityInstance, propertyKey);
-      const primaryKeyMetadata = getPrimaryKeyMetadata(entityInstance, propertyKey);
+      const primaryKeyMetadata = getPrimaryKeyMetadata(
+        entityInstance,
+        propertyKey
+      );
 
       if (propertyMetadata) {
         const columnName = propertyMetadata.name || propertyKey.toString();
         const columnNotNull = propertyMetadata?.notNull || false;
-        const columnType = OrmTypesToPostgreSQLMap[propertyMetadata.type] as PostgreSQLType;
+        const columnType = OrmTypesToPostgreSQLMap[
+          propertyMetadata.type
+        ] as PostgreSQLType;
         const primaryKeyOptions = primaryKeyMetadata || {};
 
         let columnDefinition = `${columnName} ${columnType} ${
@@ -53,7 +58,9 @@ export class CreateTableQueryBuilder {
       }
     });
 
-    const createTableQuery = `CREATE TABLE IF NOT EXISTS ${tableName} (${columns.join(", ")});`;
+    const createTableQuery = `CREATE TABLE IF NOT EXISTS ${tableName} (${columns.join(
+      ", "
+    )});`;
 
     return createTableQuery;
   }

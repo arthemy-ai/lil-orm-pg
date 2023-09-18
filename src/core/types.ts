@@ -9,7 +9,15 @@ export interface ColumnMetadata {
   value: string | number;
 }
 
-export type PostgreSQLType = "INTEGER" | "TEXT" | "REAL" | "BYTEA" | "JSONB" | "BOOLEAN" | "TIMESTAMP" | "UUID";
+export type PostgreSQLType =
+  | "INTEGER"
+  | "TEXT"
+  | "REAL"
+  | "BYTEA"
+  | "JSONB"
+  | "BOOLEAN"
+  | "TIMESTAMP"
+  | "UUID";
 export type SQLiteType = "INTEGER" | "TEXT" | "REAL" | "BLOB";
 export type LilOrmTypeExtension = "JSON" | "BOOLEAN" | "DATE" | "UUID";
 
@@ -19,7 +27,7 @@ export const OrmTypesToPostgreSQLMap: Record<LilORMType, PostgreSQLType> = {
   INTEGER: "INTEGER",
   TEXT: "TEXT",
   REAL: "REAL",
-  BLOB: "BYTEA",     // PostgreSQL usa BYTEA per i blob/binari
+  BLOB: "BYTEA", // PostgreSQL usa BYTEA per i blob/binari
   JSON: "JSONB",
   BOOLEAN: "BOOLEAN",
   DATE: "TIMESTAMP",
