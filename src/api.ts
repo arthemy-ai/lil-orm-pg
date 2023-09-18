@@ -72,15 +72,20 @@ export class LilORM {
   }
 
   /**
-   * Checks if a table with the specified name exists in the SQLite database.
+   * Checks if a table with the specified name exists in the PostgreSQL database.
    * @param {string} tableName - The name of the table to check.
    * @returns {Promise<boolean>} A Promise that resolves to true if the table exists, false otherwise.
    */
   async tableExists(tableName: string): Promise<boolean> {
-    const query = `SELECT name FROM sqlite_master WHERE type='table' AND name='${tableName}'`;
+    const query = `
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema='public' 
+      AND table_name='${tableName}'`;
     const res = await this.databaseConnection.executeQuery(query);
     return res.length > 0;
   }
+
 
   get dbInstance() {
     return this.databaseConnection;
