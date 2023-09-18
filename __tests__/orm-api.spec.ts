@@ -7,12 +7,12 @@ describe('LilORM API', () => {
     let lilOrm: LilORM;
 
     beforeEach(async () => {
-        const connectionString = ':memory:';
+        const connectionString = 'postgresql://username:password@localhost:5432/mydb';
         lilOrm = new LilORM(connectionString);
         await lilOrm.createTable(UserEntity);
 
         const userEntity = new UserEntity();
-        userEntity.id = 1;
+        userEntity.id = '4048a348-ad49-487f-80fe-9cd1c0e81df7';
         userEntity.name = 'test';
         userEntity.email = 'test@example.com';
         userEntity.isActive = true;
@@ -33,7 +33,7 @@ describe('LilORM API', () => {
             .or('config').equals({ allowed: true })
             .finalize(), (data) => data)
         
-        expect(user[0].config).toBe('{"allowed":true}')
+        expect(user[0].config).toStrictEqual({allowed:true})
         expect(user[0]).toBeDefined();
     });
 

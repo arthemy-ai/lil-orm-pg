@@ -1,12 +1,8 @@
 import { COLUMN_METADATA_KEY } from "./metadata/constants";
 import { MetadataExtractor } from "./metadata/metadata-extractor";
-import {
-  ColumnMetadata,
-  LilORMType,
-  OrmTypesToSQLiteMap,
-  SQLiteType,
-} from "./types";
+import { ColumnMetadata, LilORMType, OrmTypesToPostgreSQLMap, PostgreSQLType } from "./types";
 import { TypesHelper } from "./types-helper";
+import { formatISO, parseISO } from 'date-fns';
 
 export class EntityTransformer {
   static sqlEntityToObj<TEntity>(entityInstance: any, values: any): TEntity {
@@ -34,8 +30,8 @@ export class EntityTransformer {
   static valueQueryFormatter(value: any): string {
     if (value === null) return `NULL`;
     if (TypesHelper.isString(value)) return `'${value}'`;
-    if (TypesHelper.isDate(value)) return `'${(value as Date).toISOString()}'`;
-    if (TypesHelper.isBoolean(value)) return value ? "1" : "0";
+    if (TypesHelper.isDate(value)) return `'${(value as Date).toUTCString()}'`;
+    if (TypesHelper.isBoolean(value)) return value ? "true" : "false";
     if (TypesHelper.isNumber(value)) return value.toString();
     if (TypesHelper.isJSONObject(value)) return `'${JSON.stringify(value)}'`;
     throw new Error("Not supported type");
@@ -43,31 +39,27 @@ export class EntityTransformer {
 
   static get typeFormatters() {
     return {
-      TEXT: (value: any) =>
-        typeof value === "string" ? `'${value}'` : String(value),
-      INTEGER: (value: any) =>
-        typeof value === "boolean" ? (value ? 1 : 0) : parseInt(value, 10),
-      REAL: (value: any) => parseFloat(value),
+      TEXT: (value: any) => `'${value}'`,
+      INTEGER: (value: any) => parseInt(value, 10).toString(),
+      REAL: (value: any) => parseFloat(value).toString(),
       JSON: (value: any) => `'${JSON.stringify(value)}'`,
-      BOOLEAN: (value: any) => (value === true ? 1 : 0),
-      DATE: (value: any) => `${new Date(value).getTime()}`,
-      BLOB: (value: any) => `'${value}'`,
+      BOOLEAN: (value: any) => value ? "true" : "false",
+      DATE: (value: any) => `'${formatISO(new Date(value))}'`,
       UUID: (value: any) => `'${value}'`,
+      BLOB: (value: any) => `'\\x${value.toString('hex')}'`,
     };
   }
 
   static get invTypeFormatters() {
     return {
-      TEXT: (value: any) =>
-        typeof value === "string" ? `${value}` : String(value),
-      INTEGER: (value: any) =>
-        typeof value === "boolean" ? (value ? 1 : 0) : parseInt(value, 10),
+      TEXT: (value: any) => value,
+      INTEGER: (value: any) => parseInt(value, 10),
       REAL: (value: any) => parseFloat(value),
-      JSON: (value: any) => JSON.parse(value),
-      BOOLEAN: (value: any) => Boolean(value),
-      DATE: (value: any) => new Date(parseInt(value, 10)),
-      BLOB: (value: any) => value,
+      JSON: (value: any) => value,
+      BOOLEAN: (value: any) => Boolean(value === true),
+      DATE: (value: any) =>  new Date(value),
       UUID: (value: any) => value,
+      BLOB: (value: any) => Buffer.from(value.slice(2), 'hex'),
     };
   }
 
@@ -81,7 +73,7 @@ export class EntityTransformer {
     return value;
   }
 
-  static formatValueToSQLiteType(value: any, type: LilORMType): any {
+  static formatValueToPostgreSQLType(value: any, type: LilORMType): any {
     if (value === undefined) return undefined;
     if (value === null) return "NULL";
 

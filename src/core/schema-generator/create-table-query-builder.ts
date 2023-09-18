@@ -1,8 +1,8 @@
 import { ColumnOtps, PrimaryKeyOpts } from "../decorators";
 import { PRIMARY_KEY_METADATA_KEY } from "../metadata/constants";
 import { MetadataExtractor } from "../metadata/metadata-extractor";
-import { OrmTypesToSQLiteMap, SQLiteType } from "../types";
 import "reflect-metadata";
+import { OrmTypesToPostgreSQLMap, PostgreSQLType } from "../types";
 
 export class CreateTableQueryBuilder {
   createTableSql(entityClass: any): string {
@@ -33,17 +33,12 @@ export class CreateTableQueryBuilder {
 
     properties.forEach((propertyKey) => {
       const propertyMetadata = getColumnMetadata(entityInstance, propertyKey);
-      const primaryKeyMetadata = getPrimaryKeyMetadata(
-        entityInstance,
-        propertyKey
-      );
+      const primaryKeyMetadata = getPrimaryKeyMetadata(entityInstance, propertyKey);
 
       if (propertyMetadata) {
         const columnName = propertyMetadata.name || propertyKey.toString();
         const columnNotNull = propertyMetadata?.notNull || false;
-        const columnType = OrmTypesToSQLiteMap[
-          propertyMetadata.type
-        ] as SQLiteType;
+        const columnType = OrmTypesToPostgreSQLMap[propertyMetadata.type] as PostgreSQLType;
         const primaryKeyOptions = primaryKeyMetadata || {};
 
         let columnDefinition = `${columnName} ${columnType} ${
@@ -51,16 +46,14 @@ export class CreateTableQueryBuilder {
         }`;
 
         if (primaryKeyOptions.autoIncrement) {
-          columnDefinition += " PRIMARY KEY AUTOINCREMENT";
+          columnDefinition += " SERIAL PRIMARY KEY"; // In PostgreSQL, `SERIAL` implies `PRIMARY KEY` and provides auto-increment.
         }
 
         columns.push(columnDefinition);
       }
     });
 
-    const createTableQuery = `CREATE TABLE IF NOT EXISTS ${tableName} (${columns.join(
-      ", "
-    )});`;
+    const createTableQuery = `CREATE TABLE IF NOT EXISTS ${tableName} (${columns.join(", ")});`;
 
     return createTableQuery;
   }

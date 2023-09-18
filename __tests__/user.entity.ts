@@ -6,14 +6,15 @@ import "reflect-metadata"
 export class UserEntity {
   //@ts-ignore
   @PrimaryKey({
-    autoIncrement: true,
+    autoIncrement: false,
+    
   })
   //@ts-ignore
   @Column({
-    type: "INTEGER",
+    type: "UUID",
     name: "id",
   })
-  id: number;
+  id: string;
 
   //@ts-ignore
   @Column({

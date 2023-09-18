@@ -28,7 +28,7 @@ export class LilORM {
   constructor(private readonly databaseString: string) {
     this.databaseConnection = new DatabaseConnection(
       this.databaseString,
-      "sqlite"
+      "postgresql"
     );
     this.dataAccessLayer = new DataAccessLayer(this.databaseConnection);
     this._schemaGenerator = new SchemaGenerator(this.databaseConnection);

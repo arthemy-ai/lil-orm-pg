@@ -20,14 +20,28 @@ export class QueryCondition<T, K extends keyof T> {
     const mapping = this.propertyMappings.find(
       (mappingItem) => mappingItem.entityProperty === this.property
     );
-    return `${this.tableName}.${
-      mapping ? mapping.columnName : String(this.property)
-    }`;
+    return `${this.tableName}.${mapping ? mapping.columnName : String(this.property)
+      }`;
+  }
+
+
+  private isJSONType(): boolean {
+    const type = this.propertyMappings.find(
+      (mapping) => mapping.entityProperty === this.property
+    )?.columnType;
+
+    return type === "JSON";  // Assumi che "JSON" sia il valore che stai usando per rappresentare il tipo di colonna JSON.
   }
 
   equals(value: T[K]): QueryCondition<T, K> {
     const columnName = this.getColumnName();
-    this.whereClauses.push(`${columnName} = ${this.formatValue(value)}`);
+    
+    if (this.isJSONType()) {
+      this.whereClauses.push(`${columnName} @> ${this.formatValue(value)}`);
+    } else {
+      this.whereClauses.push(`${columnName} = ${this.formatValue(value)}`);
+    }
+  
     return this;
   }
 
@@ -84,10 +98,18 @@ export class QueryCondition<T, K extends keyof T> {
       this.propertyMappings.find(
         (mapping) => mapping.entityProperty === this.property
       )?.columnType || "TEXT";
-    return valueQueryFormatter(
-      EntityTransformer.formatValueToSQLiteType(value, type)
+  
+    const formattedValue = valueQueryFormatter(
+      EntityTransformer.formatValueToPostgreSQLType(value, type)
     );
+  
+    if (this.isJSONType()) {
+      return `${formattedValue}::jsonb`;
+    }
+  
+    return formattedValue;
   }
+  
 
   private buildCondition(): string {
     return this.whereClauses.join(" AND ");

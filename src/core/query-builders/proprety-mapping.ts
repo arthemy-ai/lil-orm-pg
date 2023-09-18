@@ -35,9 +35,9 @@ export function getPropertyMappings<T>(
 
 export function valueQueryFormatter(value: any): string {
   if (value === null) return `NULL`;
-  if (TypesHelper.isString(value)) return `${value}`;
-  if (TypesHelper.isDate(value)) return `${(value as Date).getTime()}`;
-  if (TypesHelper.isBoolean(value)) return value ? "1" : "0";
+  if (TypesHelper.isString(value)) return `${value}`; // Assuming you have an escape function
+  if (TypesHelper.isDate(value)) return `'${value.toISOString()}'`; // Convert to ISO string
+  if (TypesHelper.isBoolean(value)) return value ? "true" : "false";
   if (TypesHelper.isNumber(value)) return value.toString();
   if (TypesHelper.isJSONObject(value)) return `'${JSON.stringify(value)}'`;
   throw new Error("Not supported type");
