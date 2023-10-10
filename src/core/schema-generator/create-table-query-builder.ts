@@ -53,6 +53,9 @@ export class CreateTableQueryBuilder {
         if (primaryKeyOptions.autoIncrement) {
           columnDefinition += " SERIAL PRIMARY KEY"; // In PostgreSQL, `SERIAL` implies `PRIMARY KEY` and provides auto-increment.
         }
+        if (primaryKeyMetadata) {
+          columnDefinition += " PRIMARY KEY";
+        }
 
         columns.push(columnDefinition);
       }
