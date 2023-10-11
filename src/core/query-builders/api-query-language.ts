@@ -33,6 +33,10 @@ export class QueryBuilderAPI {
   };
 
   constructor() {
+    this.intialize();
+  }
+
+  private intialize() {
     this.whereClauses = [];
     this.entityQueries = [];
     this.sortColumn = null;
@@ -79,6 +83,10 @@ export class QueryBuilderAPI {
     };
   }
 
+  dispose() {
+    this.intialize();
+  }
+
   forEntity<T>(
     entityClass: new () => T extends object ? T : any,
     operationType: OperationType = OperationType.Select
@@ -120,6 +128,7 @@ export class QueryBuilderAPI {
     }, "");
 
     const whereClauseStr = whereClause ? `WHERE ${whereClause}` : "";
+    let buildStr = "";
 
     switch (this.operationType) {
       case OperationType.Select:
@@ -131,25 +140,31 @@ export class QueryBuilderAPI {
           this.groupByColumns.length > 0
             ? `GROUP BY ${this.groupByColumns.join(", ")}`
             : "";
-        return `SELECT * FROM ${fromClause} ${whereClauseStr} ${sortClause} ${groupByClause}`;
+        buildStr =  `SELECT * FROM ${fromClause} ${whereClauseStr} ${sortClause} ${groupByClause}`;
+        break;
 
       case OperationType.InsertInto:
         fromClause = this.entityQueries[0];
         const columnsClause = `(${this.columns.join(", ")})`;
         const valuesClause = `VALUES (${this.values.join(", ")})`;
-        return `INSERT INTO ${fromClause} ${columnsClause} ${valuesClause}`;
+        buildStr = `INSERT INTO ${fromClause} ${columnsClause} ${valuesClause}`;
+        break;
 
       case OperationType.Update:
         fromClause = this.entityQueries[0];
         const setClause = `SET ${this.setClauses.join(", ")}`;
-        return `UPDATE ${fromClause} ${setClause} ${whereClauseStr}`;
+        buildStr = `UPDATE ${fromClause} ${setClause} ${whereClauseStr}`;
+        break;
 
       case OperationType.DeleteFrom:
         fromClause = this.entityQueries[0];
-        return `DELETE FROM ${fromClause} ${whereClauseStr}`;
+        buildStr = `DELETE FROM ${fromClause} ${whereClauseStr}`;
+        break;
 
       default:
         throw new Error("Invalid operation type");
     }
+    this.dispose();
+    return buildStr;
   }
 }
