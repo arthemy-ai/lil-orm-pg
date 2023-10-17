@@ -58,6 +58,18 @@ export class QueryCondition<T, K extends keyof T> {
     return this;
   }
 
+  is(value: T[K]): QueryCondition<T, K> {
+    const columnName = this.getColumnName();
+    this.whereClauses.push(`${columnName} IS ${this.formatValue(value)}`);
+    return this;
+  }
+
+  isNot(value: T[K]): QueryCondition<T, K> {
+    const columnName = this.getColumnName();
+    this.whereClauses.push(`${columnName} IS NOT ${this.formatValue(value)}`);
+    return this;
+  }
+
   greaterThan(value: T[K]): QueryCondition<T, K> {
     const columnName = this.getColumnName();
     this.whereClauses.push(`${columnName} > ${this.formatValue(value)}`);
