@@ -46,7 +46,7 @@ export function valueQueryFormatter(value: any): string {
 
 export function escapeValue(value: any): any {
   const escaped = value.replace(/'/g, "''");
-  return `'${escaped}'`
+  return `'${escaped}'`;
 }
 
 export function escapeJSONForSQL(json: object): string {

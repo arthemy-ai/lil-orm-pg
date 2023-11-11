@@ -1,6 +1,9 @@
 import { COLUMN_METADATA_KEY } from "./metadata/constants";
 import { MetadataExtractor } from "./metadata/metadata-extractor";
-import { escapeJSONForSQL, escapeValue } from "./query-builders/proprety-mapping";
+import {
+  escapeJSONForSQL,
+  escapeValue,
+} from "./query-builders/proprety-mapping";
 import {
   ColumnMetadata,
   LilORMType,

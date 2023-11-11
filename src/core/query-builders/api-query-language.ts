@@ -140,7 +140,7 @@ export class QueryBuilderAPI {
           this.groupByColumns.length > 0
             ? `GROUP BY ${this.groupByColumns.join(", ")}`
             : "";
-        buildStr =  `SELECT * FROM ${fromClause} ${whereClauseStr} ${sortClause} ${groupByClause}`;
+        buildStr = `SELECT * FROM ${fromClause} ${whereClauseStr} ${sortClause} ${groupByClause}`;
         break;
 
       case OperationType.InsertInto:

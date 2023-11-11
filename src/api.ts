@@ -86,7 +86,6 @@ export class LilORM {
     return res.length > 0;
   }
 
-
   get dbInstance() {
     return this.databaseConnection;
   }
