@@ -111,9 +111,9 @@ export class QueryCondition<T, K extends keyof T> {
         (mapping) => mapping.entityProperty === this.property
       )?.columnType || "TEXT";
 
-    const formattedValue = valueQueryFormatter(
+    const formattedValue = //valueQueryFormatter(
       EntityTransformer.formatValueToPostgreSQLType(value, type)
-    );
+    //);
 
     if (this.isJSONType()) {
       return `${formattedValue}::jsonb`;

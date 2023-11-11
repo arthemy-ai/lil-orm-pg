@@ -1,5 +1,6 @@
 import { COLUMN_METADATA_KEY } from "./metadata/constants";
 import { MetadataExtractor } from "./metadata/metadata-extractor";
+import { escapeJSONForSQL, escapeValue } from "./query-builders/proprety-mapping";
 import {
   ColumnMetadata,
   LilORMType,
@@ -34,7 +35,7 @@ export class EntityTransformer {
 
   static valueQueryFormatter(value: any): string {
     if (value === null) return `NULL`;
-    if (TypesHelper.isString(value)) return `'${value}'`;
+    if (TypesHelper.isString(value)) return `${value}`;
     if (TypesHelper.isDate(value)) return `'${(value as Date).toUTCString()}'`;
     if (TypesHelper.isBoolean(value)) return value ? "true" : "false";
     if (TypesHelper.isNumber(value)) return value.toString();
@@ -44,10 +45,10 @@ export class EntityTransformer {
 
   static get typeFormatters() {
     return {
-      TEXT: (value: any) => `'${value}'`,
+      TEXT: (value: any) => `${escapeValue(value)}`,
       INTEGER: (value: any) => parseInt(value, 10).toString(),
       REAL: (value: any) => parseFloat(value).toString(),
-      JSON: (value: any) => `'${JSON.stringify(value)}'`,
+      JSON: (value: any) => `${escapeJSONForSQL(value)}`,
       BOOLEAN: (value: any) => (value ? "true" : "false"),
       DATE: (value: any) => `'${formatISO(new Date(value))}'`,
       UUID: (value: any) => `'${value}'`,
