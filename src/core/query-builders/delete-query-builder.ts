@@ -14,7 +14,7 @@ export class DeleteQueryBuilder<T> {
     this.queryBuilder.forEntity(this.entityClass, OperationType.DeleteFrom);
   }
 
-  self() {
+  self(): DeleteQueryBuilder<T> {
     return this;
   }
 

@@ -3,7 +3,7 @@ import { MetadataExtractor } from "../metadata/metadata-extractor";
 import { SQLiteDatabase } from "../database/sqlite-provider";
 import { Transaction } from "./transaction";
 import { DataAccessLayer } from "./data-access-layer";
-import { QueryBuilderAPI } from "../query-builders/api-query-language";
+import { OperationType, QueryBuilderAPI } from "../query-builders/api-query-language";
 import { DatabaseConnection } from "../database/database-connection";
 import { WhereQueryBuilder } from "../query-builders/where-query-builder";
 import { UpdateQueryBuilder } from "../query-builders/update-query-builder";
@@ -81,10 +81,10 @@ export class Repository<TEntity> {
 
   public async delete(
     conditionBuilder: (
-      whereBuilder: DeleteQueryBuilder<TEntity>
+      whereBuilder: WhereQueryBuilder<TEntity>
     ) => QueryCondition<TEntity, keyof TEntity>
   ): Promise<void> {
-    const whereBuilder = this.queryBuilder.deleteFrom(this.entityModel).self();
+    const whereBuilder = this.queryBuilder.forEntity(this.entityModel, OperationType.DeleteFrom);
     const queryBuilder = conditionBuilder(whereBuilder).finalize();
     await this.dataAccessLayer.delete(queryBuilder);
   }
