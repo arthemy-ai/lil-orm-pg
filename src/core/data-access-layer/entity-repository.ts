@@ -84,7 +84,7 @@ export class Repository<TEntity> {
       whereBuilder: DeleteQueryBuilder<TEntity>
     ) => QueryCondition<TEntity, keyof TEntity>
   ): Promise<void> {
-    const whereBuilder = this.queryBuilder.deleteFrom(this.entityModel);
+    const whereBuilder = this.queryBuilder.deleteFrom(this.entityModel).self();
     const queryBuilder = conditionBuilder(whereBuilder).finalize();
     await this.dataAccessLayer.delete(queryBuilder);
   }

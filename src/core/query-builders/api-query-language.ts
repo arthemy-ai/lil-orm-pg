@@ -119,7 +119,7 @@ export class QueryBuilderAPI {
     return new DeleteQueryBuilder(entityClass, this);
   }
 
-  build(forceOperationType?: OperationType): string {
+  build(): string {
     let fromClause = "";
     const whereClause = this.whereClauses.reduce((acc, clause, i) => {
       if (i === 0) return clause;
@@ -129,10 +129,6 @@ export class QueryBuilderAPI {
 
     const whereClauseStr = whereClause ? `WHERE ${whereClause}` : "";
     let buildStr = "";
-
-    if(forceOperationType) {
-      this.operationType = forceOperationType
-    }
 
     switch (this.operationType) {
       case OperationType.Select:

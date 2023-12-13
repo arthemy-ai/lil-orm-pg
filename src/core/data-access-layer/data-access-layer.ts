@@ -29,7 +29,7 @@ export class DataAccessLayer {
   }
 
   public async delete(queryBuilder: QueryBuilderAPI): Promise<void> {
-    const query = queryBuilder.build(OperationType.DeleteFrom);
+    const query = queryBuilder.build();
     await this.database.executeNonQuery(query);
   }
 }
