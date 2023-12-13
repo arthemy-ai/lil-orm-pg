@@ -1,6 +1,6 @@
 import { DatabaseConnection } from "../database/database-connection";
 import { EntityTransformer } from "../entity-transformer";
-import { QueryBuilderAPI } from "../query-builders/api-query-language";
+import { OperationType, QueryBuilderAPI } from "../query-builders/api-query-language";
 
 export class DataAccessLayer {
   private database: DatabaseConnection;
@@ -29,7 +29,7 @@ export class DataAccessLayer {
   }
 
   public async delete(queryBuilder: QueryBuilderAPI): Promise<void> {
-    const query = queryBuilder.build();
+    const query = queryBuilder.build(OperationType.DeleteFrom);
     await this.database.executeNonQuery(query);
   }
 }
